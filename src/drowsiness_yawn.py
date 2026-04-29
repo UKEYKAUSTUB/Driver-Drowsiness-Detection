@@ -7,6 +7,7 @@ import threading
 import pygame
 import requests
 import time
+from dotenv import load_dotenv
 import os
 import sys
 import requests
@@ -31,24 +32,27 @@ DISPLAY_COUNTER_DROWSY = 0
 ALERT_SENT = False
 YAWN_ALERT_SENT = False
 ALERT_IN_PROGRESS = False
+load_dotenv()
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
+
 def send_telegram():
-    token = "8646714250:AAHp0vsxL2SQ2gCLYcSXgQ62cCAkKmJfa60"
-    chat_id = "5071865954"
     location = get_location()
     message = f"""🚨 Drowsiness detected! Driver is sleepy.
     Location: https://www.google.com/maps?q={location}"""
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
     requests.post(url, data={
-        "chat_id": chat_id,
+        "chat_id": CHAT_ID,
         "text": message
     })
+
+    
 def send_image(filename):
-    token = "8646714250:AAHp0vsxL2SQ2gCLYcSXgQ62cCAkKmJfa60"
-    chat_id = "5071865954"
-    url = f"https://api.telegram.org/bot{token}/sendPhoto"
+    url = f"https://api.telegram.org/bot{TOKEN}/sendPhoto"
     with open(f"../drowsiness-backend/uploads/{filename}", "rb") as photo:
-        requests.post(url, data={"chat_id": chat_id}, files={"photo": photo})
+        requests.post(url, data={"chat_id": CHAT_ID}, files={"photo": photo})
+    
 
 def get_location():
     try:
