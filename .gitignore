@@ -1,0 +1,14 @@
+# Ignore large model files and videos
+models/*.dat
+demo/*.mp4
+*.log
+venv/
+node_modules/
+uploads/
+dist/
+build/
+__pycache__/
+*.pyc
+.env
+dlib/
+docs/
