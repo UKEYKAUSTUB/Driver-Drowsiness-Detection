@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+require("dotenv").config();
 const app = express();
 
 // Middleware
@@ -10,8 +10,8 @@ app.use(express.json());
 
 
 // 🔗 MongoDB Connection
-mongoose.connect("mongodb://127.0.0.1:27017/drowsinessDB")
-.then(() => console.log("✅ MongoDB Connected"))
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("✅ MongoDB Atlas Connected"))
 .catch(err => console.log("❌ DB Error:", err));
 
 
