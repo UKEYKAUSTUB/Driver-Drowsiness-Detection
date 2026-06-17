@@ -14,6 +14,13 @@ mongoose.connect("mongodb://127.0.0.1:27017/drowsinessDB")
 .then(() => console.log("✅ MongoDB Connected"))
 .catch(err => console.log("❌ DB Error:", err));
 
+
+// Store latest GPS coordinates
+let latestLocation = {
+  latitude: null,
+  longitude: null
+};
+
 // 📦 Schema
 const AlertSchema = new mongoose.Schema({
     status: String,
@@ -43,6 +50,20 @@ app.post("/alert", async (req, res) => {
 app.get("/alerts", async (req, res) => {
     const alerts = await Alert.find().sort({ _id: -1 });
     res.json(alerts);
+});
+
+// Save latest GPS location from frontend
+app.post("/location", (req, res) => {
+    latestLocation = req.body;
+
+    console.log("📍 GPS Updated:", latestLocation);
+
+    res.json({ success: true });
+});
+
+// Python can fetch latest GPS location
+app.get("/location", (req, res) => {
+    res.json(latestLocation);
 });
 
 // ▶️ Start server

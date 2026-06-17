@@ -12,15 +12,24 @@ import os
 import sys
 import requests
 import datetime
+from geopy.geocoders import Nominatim
 def send_to_server(filename):
     try:
+        latitude, longitude = get_gps_location()
+        readable_location = get_readable_location(
+            latitude,
+            longitude
+        )
+
         requests.post("http://localhost:5000/alert", json={
             "status": "Drowsy",
             "time": str(datetime.datetime.now()),
             "image": filename,
-            "location": "Pune, India"
+            "location": readable_location
         })
+
         print("✅ Sent to backend")
+
     except Exception as e:
         print("❌ Server error:", e)
         
@@ -36,16 +45,65 @@ load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-def send_telegram():
-    location = get_location()
-    message = f"""🚨 Drowsiness detected! Driver is sleepy.
-    Location: https://www.google.com/maps?q={location}"""
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+def get_readable_location(latitude, longitude):
+    try:
+        geolocator = Nominatim(user_agent="drowsiness_app")
 
-    requests.post(url, data={
-        "chat_id": CHAT_ID,
-        "text": message
-    })
+        location = geolocator.reverse(
+            f"{latitude}, {longitude}",
+            language="en"
+        )
+
+        return location.address
+
+    except Exception as e:
+        print("Geocoding Error:", e)
+        return f"{latitude}, {longitude}"
+
+def get_gps_location():
+    try:
+        print("Fetching GPS...")
+
+        response = requests.get(
+            "http://localhost:5000/location",
+            timeout=3
+        )
+
+        print("GPS Response:", response.text)
+
+        data = response.json()
+
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+
+        return latitude, longitude
+
+    except Exception as e:
+        print("GPS Error:", e)
+        return None, None
+
+def send_telegram():
+    try:
+        location = get_location()
+
+        message = f"""🚨 Drowsiness detected! Driver is sleepy.
+Location: https://www.google.com/maps?q={location}"""
+
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+
+        requests.post(
+            url,
+            data={
+                "chat_id": CHAT_ID,
+                "text": message
+            },
+            timeout=5
+        )
+
+        print("✅ Telegram sent")
+
+    except Exception as e:
+        print("❌ Telegram Error:", e)
 
     
 def send_image(filename):
@@ -56,9 +114,11 @@ def send_image(filename):
 
 def get_location():
     try:
-        data = requests.get("https://ipinfo.io").json()
-        loc = data['loc']   # format: "lat,long"
-        return loc
+        data = requests.get("https://ipinfo.io/json").json()
+        city = data.get("city", "")
+        region = data.get("region", "")
+        country = data.get("country", "")
+        return f"{city}, {region}, {country}"
     except:
         return "Location not available"
 
@@ -102,13 +162,21 @@ def mouth_aspect_ratio(mouth):
 #Function that sends yawn to backend
 def send_to_server_yawn(filename):
     try:
+        latitude, longitude = get_gps_location()
+        readable_location = get_readable_location( 
+            latitude,
+            longitude
+        )
+
         requests.post("http://localhost:5000/alert", json={
             "status": "Yawn",
             "time": str(datetime.datetime.now()),
             "image": filename,
-            "location": "Pune, India"
+            "location": readable_location
         })
+
         print("✅ Yawn sent to backend")
+
     except Exception as e:
         print("❌ Server error:", e)
         
@@ -157,15 +225,34 @@ YAWN_CONSEC_FRAMES = 5
 
 def handle_alert(frame, filename, label):
     frame_copy = frame.copy()
-    cv2.putText(frame_copy, label, (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    cv2.imwrite(f"../drowsiness-backend/uploads/{filename}", frame)
-    send_telegram()
-    send_image(filename)
+
+    cv2.putText(
+        frame_copy,
+        label,
+        (10, 30),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (0, 0, 255),
+        2
+    )
+
+    cv2.imwrite(
+        f"../drowsiness-backend/uploads/{filename}",
+        frame_copy
+    )
+
+    # Save alert first
     if label == "DROWSINESS DETECTED!":
         send_to_server(filename)
     else:
         send_to_server_yawn(filename)
+
+    # Telegram is optional
+    #try:
+        # send_telegram()
+        # send_image(filename)
+    #except Exception as e:
+        #print("Telegram Error:", e)
     
 while True:
     # Capture frame-by-frame
