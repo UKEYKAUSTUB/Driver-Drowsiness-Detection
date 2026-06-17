@@ -13,7 +13,25 @@ import sys
 import requests
 import datetime
 from geopy.geocoders import Nominatim
-def send_to_server(filename):
+import cloudinary
+import cloudinary.uploader
+load_dotenv()
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+def upload_to_cloudinary(filepath):
+    try:
+        result = cloudinary.uploader.upload(filepath)
+        print("☁️ Uploaded to Cloudinary")
+
+        return result["secure_url"]
+
+    except Exception as e:
+        print("❌ Cloudinary Error:", e)
+        return None
+def send_to_server(image_url):
     try:
         latitude, longitude = get_gps_location()
         readable_location = get_readable_location(
@@ -24,7 +42,7 @@ def send_to_server(filename):
         requests.post("http://localhost:5000/alert", json={
             "status": "Drowsy",
             "time": str(datetime.datetime.now()),
-            "image": filename,
+            "image": image_url,
             "location": readable_location
         })
 
@@ -41,7 +59,6 @@ DISPLAY_COUNTER_DROWSY = 0
 ALERT_SENT = False
 YAWN_ALERT_SENT = False
 ALERT_IN_PROGRESS = False
-load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
@@ -160,7 +177,7 @@ def mouth_aspect_ratio(mouth):
     return mar
 
 #Function that sends yawn to backend
-def send_to_server_yawn(filename):
+def send_to_server_yawn(image_url):
     try:
         latitude, longitude = get_gps_location()
         readable_location = get_readable_location( 
@@ -171,7 +188,7 @@ def send_to_server_yawn(filename):
         requests.post("http://localhost:5000/alert", json={
             "status": "Yawn",
             "time": str(datetime.datetime.now()),
-            "image": filename,
+            "image": image_url,
             "location": readable_location
         })
 
@@ -236,16 +253,15 @@ def handle_alert(frame, filename, label):
         2
     )
 
-    cv2.imwrite(
-        f"../drowsiness-backend/uploads/{filename}",
-        frame_copy
-    )
+    filepath = f"../drowsiness-backend/uploads/{filename}"
+    cv2.imwrite(filepath, frame_copy)
+    image_url = upload_to_cloudinary(filepath)
 
     # Save alert first
     if label == "DROWSINESS DETECTED!":
-        send_to_server(filename)
+        send_to_server(image_url)
     else:
-        send_to_server_yawn(filename)
+        send_to_server_yawn(image_url)
 
     # Telegram is optional
     #try:

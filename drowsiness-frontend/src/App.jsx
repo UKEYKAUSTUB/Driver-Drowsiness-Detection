@@ -130,9 +130,9 @@ return (
           {/* Image */}
          <div className="flex-shrink-0">
          <img
-         src={`http://localhost:5000/uploads/${alert.image}`}
-         alt="alert"
-         className="rounded-lg border w-96 max-w-full"
+            src={alert.image}
+            alt="alert"
+            className="rounded-lg border w-96 max-w-full"
         />
         </div>
 
