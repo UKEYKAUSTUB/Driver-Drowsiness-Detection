@@ -173,54 +173,29 @@ function LandingPage({ setShowDashboard }) {
         </div>
       </div>
 
-      <footer className="bg-black border-t border-slate-700 ">
+ <footer className="mt-12 text-center text-gray-500 border-t pt-6">
 
-  <div className="max-w-7xl mx-auto px-6 py-12 text-center">
+  <p className="font-semibold">
+    Real-Time Driver Drowsiness & Yawn Detection System
+  </p>
 
-    <h3 className="text-3xl font-bold">
-      🚗 Driver Drowsiness & Yawn Detection
-    </h3>
+  <p className="mt-2">
+    Python • OpenCV • Dlib • React • Express • MongoDB Atlas • Cloudinary
+  </p>
 
-    <p className="mt-5 text-gray-400 max-w-3xl mx-auto leading-8">
-      AI-powered real-time driver monitoring system that detects
-      drowsiness and yawning, stores cloud-based event history,
-      tracks GPS location and enables dashboard analytics for
-      fleet operators and transport organizations.
-    </p>
+  <p className="mt-2 text-sm">
+    Developed for Academic Research Project © 2026
+  </p>
 
-    <div className="flex flex-wrap justify-center gap-3 mt-8">
-
-      {[
-        "Python",
-        "OpenCV",
-        "Dlib",
-        "React",
-        "Express",
-        "MongoDB Atlas",
-        "Cloudinary",
-      ].map((tech) => (
-        <span
-          key={tech}
-          className="bg-slate-800 px-4 py-2 rounded-full text-sm hover:bg-blue-600 transition"
-        >
-          {tech}
-        </span>
-      ))}
-
-    </div>
-
-    <div className="border-t border-slate-800 mt-10 pt-6">
-
-      <p className="text-gray-500">
-        Final Year Research Project • Department of Computer Science & Engineering
-      </p>
-
-      <p className="text-gray-600 text-sm mt-2">
-        © 2026 All Rights Reserved
-      </p>
-
-    </div>
-
+  <div className="mt-4">
+    <a
+      href="https://github.com/UKEYKAUSTUB/Driver-Drowsiness-Detection"
+      target="_blank"
+      rel="noreferrer"
+       className="inline-flex items-center bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition"
+    >
+      🔗 View Source Code on GitHub
+    </a>
   </div>
 
 </footer>
