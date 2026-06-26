@@ -39,7 +39,7 @@ def send_to_server(image_url):
             longitude
         )
 
-        requests.post("http://localhost:5000/alert", json={
+        requests.post("https://driver-drowsiness-detection-aw4v.onrender.com/alert", json={
             "status": "Drowsy",
             "time": str(datetime.datetime.now()),
             "image": image_url,
@@ -82,7 +82,7 @@ def get_gps_location():
         print("Fetching GPS...")
 
         response = requests.get(
-            "http://localhost:5000/location",
+            "https://driver-drowsiness-detection-aw4v.onrender.com/location",
             timeout=3
         )
 
@@ -185,7 +185,7 @@ def send_to_server_yawn(image_url):
             longitude
         )
 
-        requests.post("http://localhost:5000/alert", json={
+        requests.post("https://driver-drowsiness-detection-aw4v.onrender.com/alert", json={
             "status": "Yawn",
             "time": str(datetime.datetime.now()),
             "image": image_url,

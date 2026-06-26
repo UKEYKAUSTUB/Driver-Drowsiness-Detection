@@ -14,7 +14,7 @@ function Dashboard() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          await axios.post("http://localhost:5000/location", {
+          await axios.post("https://driver-drowsiness-detection-aw4v.onrender.com/location", {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
@@ -32,7 +32,7 @@ function Dashboard() {
 
   const fetchAlerts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/alerts");
+      const res = await axios.get("https://driver-drowsiness-detection-aw4v.onrender.com/alerts");
       setAlerts(res.data);
     } catch (err) {
       console.log("Error fetching alerts");

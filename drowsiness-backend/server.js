@@ -54,6 +54,8 @@ app.get("/alerts", async (req, res) => {
 
 // Save latest GPS location from frontend
 app.post("/location", (req, res) => {
+    console.log("Received location:", req.body);
+
     latestLocation = req.body;
 
     console.log("📍 GPS Updated:", latestLocation);
