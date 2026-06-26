@@ -89,7 +89,7 @@ return (
         {alerts.map((alert, index) => (
           <div
   key={index}
-  className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition duration-300"
+  className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-l-8 border-blue-600"
 >
   <div className="flex flex-col lg:flex-row gap-6 items-start">
 
@@ -132,7 +132,7 @@ return (
          <img
             src={alert.image}
             alt="alert"
-            className="rounded-lg border w-96 max-w-full"
+            className="rounded-xl shadow-lg w-96 object-cover"
         />
         </div>
 
@@ -141,11 +141,21 @@ return (
         ))}
       </div>
     )}
-    <footer className="text-center text-gray-500 mt-12 pb-6">
-      Real-Time Driver Drowsiness and Yawn Detection System
-      <br />
-      Python • OpenCV • Dlib • MongoDB • Express • React
-    </footer>
+<footer className="mt-12 text-center text-gray-500 border-t pt-6">
+
+  <p className="font-semibold">
+    Real-Time Driver Drowsiness & Yawn Detection System
+  </p>
+
+  <p className="mt-2">
+    Python • OpenCV • Dlib • React • Express • MongoDB Atlas • Cloudinary
+  </p>
+
+  <p className="mt-2 text-sm">
+    Developed for Academic Research Project © 2026
+  </p>
+
+</footer>
     </div>
   
 );

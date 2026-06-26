@@ -264,11 +264,11 @@ def handle_alert(frame, filename, label):
         send_to_server_yawn(image_url)
 
     # Telegram is optional
-    #try:
-        # send_telegram()
-        # send_image(filename)
-    #except Exception as e:
-        #print("Telegram Error:", e)
+    try:
+        send_telegram()
+        send_image(filename)
+    except Exception as e:
+        print("Telegram Error:", e)
     
 while True:
     # Capture frame-by-frame
